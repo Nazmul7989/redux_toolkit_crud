@@ -5,12 +5,12 @@ import Swal from 'sweetalert2'
 import axios from "axios";
 import Loading from "./Loading";
 import {useDispatch, useSelector} from "react-redux";
-import {updateStudent} from "../redux/reducer/StudentReducer";
+import {getStudents} from "../redux/reducer/studentSlice";
 
 const Home = () => {
 
-    const students = useSelector((state) => state.students.value)
-    const dispatch = useDispatch()
+    const studentInfos = useSelector((state) => state.students.students);
+    const dispatch = useDispatch();
 
     //modal
     const [modalShow, setModalShow] = useState(false);
@@ -71,8 +71,7 @@ const Home = () => {
 
         if (res.data.status === 200){
 
-            getStudents();
-
+            dispatch(getStudents())
             setModalShow(false)
 
             const Toast = Swal.mixin({
@@ -99,22 +98,14 @@ const Home = () => {
     }
 
 
-    //fetch all student info
-    const getStudents = async ()=>{
-        await axios.get('http://localhost:8000/api/student').then((response)=>{
-            let studentsData = response.data.students;
-            dispatch(updateStudent({payload: studentsData}))
-            setLoading(false)
-
-        }).catch((error)=>{
-            console.log(error);
-        })
-    }
 
     //fetch data when component load
     useEffect(()=>{
-        getStudents();
-    },[])
+
+        dispatch(getStudents())
+        setLoading(false)
+
+    },[dispatch])
 
 
     //edit student info
@@ -144,7 +135,7 @@ const Home = () => {
 
         if (res.data.status === 200){
 
-            getStudents();
+            dispatch(getStudents())
             setModalShow(false)
 
             const Toast = Swal.mixin({
@@ -173,7 +164,6 @@ const Home = () => {
     //delete student
     const deleteStudent = async (e,id)=>{
 
-        const currenTargetButton = e.currentTarget;
 
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
@@ -195,8 +185,7 @@ const Home = () => {
             if (result.isConfirmed) {
 
                 axios.delete('http://localhost:8000/api/student/delete/'+id).then(()=>{
-
-                    currenTargetButton.closest('tr').remove();
+                    dispatch(getStudents())
 
                 }).catch((error)=>{
                     console.log(error);
@@ -229,7 +218,7 @@ const Home = () => {
     }else {
 
         //looping the fetched students info
-        const studentData = students.map((student)=>{
+        const studentData = studentInfos.map((student)=>{
             return <tr key={student.id}>
                 <td>{student.id}</td>
                 <td>{student.name}</td>

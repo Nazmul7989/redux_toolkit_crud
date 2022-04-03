@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Provider } from 'react-redux'
 import store from "./redux/store/Store";
 
-console.log(store.getState().students.students)
+
 
 ReactDOM.render(
   <React.StrictMode>
