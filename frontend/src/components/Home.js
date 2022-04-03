@@ -4,8 +4,13 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import Swal from 'sweetalert2'
 import axios from "axios";
 import Loading from "./Loading";
+import {useDispatch, useSelector} from "react-redux";
+import {updateStudent} from "../redux/reducer/StudentReducer";
 
 const Home = () => {
+
+    const students = useSelector((state) => state.students.value)
+    const dispatch = useDispatch()
 
     //modal
     const [modalShow, setModalShow] = useState(false);
@@ -93,14 +98,12 @@ const Home = () => {
 
     }
 
-    //set data from fetched student info
-    const [students,setStudents] = useState([]);
 
     //fetch all student info
-    const getStudents = ()=>{
-        axios.get('http://localhost:8000/api/student').then((response)=>{
+    const getStudents = async ()=>{
+        await axios.get('http://localhost:8000/api/student').then((response)=>{
             let studentsData = response.data.students;
-            setStudents(studentsData);
+            dispatch(updateStudent({payload: studentsData}))
             setLoading(false)
 
         }).catch((error)=>{

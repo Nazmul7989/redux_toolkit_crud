@@ -1,9 +1,12 @@
 import React, {Fragment} from 'react';
+import {Container} from "react-bootstrap";
 
 const About = () => {
     return (
         <Fragment>
-            <h3>About Page</h3>
+            <Container>
+                <h3>About Page</h3>
+            </Container>
         </Fragment>
     );
 };
